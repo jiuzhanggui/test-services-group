@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<property name="LOG_INFO_FILE" value="logs/info.log"/>
+	<property name="LOG_INFO_FILE_BACK" value="logs/info.%i.log"/>
+	<property name="LOG_PATTERN" value="[%d{HH:mm:ss}] [%level] [%logger] [%tid] %msg%n"/>
+	<property name="MAX_FILE_SIZE" value="1GB"/>
+
+	<springProperty scope="context" name="app.name" source="spring.application.name" defaultValue=""/>
+
+	<!-- 控制台 -->
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+			<layout class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.TraceIdPatternLogbackLayout">
+				<pattern>${LOG_PATTERN}</pattern>
+			</layout>
+		</encoder>
+	</appender>
+
+	<!-- 全日志文件 -->
+	<appender name="rollingFileInfo" class="ch.qos.logback.core.rolling.RollingFileAppender" >
+		<file>${LOG_INFO_FILE}</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+			<fileNamePattern>${LOG_INFO_FILE_BACK}</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>1</maxIndex>
+		</rollingPolicy>
+		<triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>${MAX_FILE_SIZE}</maxFileSize>
+		</triggeringPolicy>
+		<encoder class="net.logstash.logback.encoder.LogstashEncoder">
+			<provider class="org.apache.skywalking.apm.toolkit.log.logback.v1.x.logstash.TraceIdJsonProvider">
+			</provider>
+		</encoder>
+	</appender>
+
+	<!-- 异步输出全日志文件 -->
+	<appender name ="asyncRollingFileInfo" class= "ch.qos.logback.classic.AsyncAppender">
+		<!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+		<discardingThreshold >0</discardingThreshold>
+		<!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+		<queueSize>1024</queueSize>
+		<!-- 超过队列长度，扔掉信息，不阻塞应用线程-->
+		<neverBlock>false</neverBlock>
+		<!-- 添加附加的appender,最多只能添加一个 -->
+		<appender-ref ref ="rollingFileInfo"/>
+	</appender>
+
+	<!--为了防止进程退出时，内存中的数据丢失，请加上此选项-->
+	<!--<shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>-->
+
+	<!-- 开发环境 -->
+	<springProfile name="dev,local">
+		<root level="info">
+			<appender-ref ref="STDOUT"/>
+		</root>
+		<!-- logger 配置 -->
+		<logger name="cn.loveapp" level="info" additivity="false">
+			<appender-ref ref="STDOUT"/>
+		</logger>
+	</springProfile>
+
+	<!-- 生产环境 -->
+	<springProfile name="prod">
+		<logger name="cn.loveapp.common" level="info" additivity="false" >
+			<appender-ref ref="STDOUT"/>
+			<appender-ref ref="asyncRollingFileInfo"/>
+		</logger>
+
+		<logger name="cn.loveapp" level="info" additivity="false" >
+			<appender-ref ref="STDOUT"/>
+			<appender-ref ref="asyncRollingFileInfo"/>
+		</logger>
+
+		<root level="info">
+			<appender-ref ref="STDOUT"/>
+			<appender-ref ref="asyncRollingFileInfo"/>
+		</root>
+	</springProfile>
+
+</configuration>

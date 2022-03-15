@@ -1,0 +1,19 @@
+# intelliJ.gitignore #
+.idea
+*.iml
+*.ipr
+*.iws
+# Java gitignore #
+.class
+.log
+.vscode
+.settings
+.project
+.classpath
+.factorypath
+pom.xml.versionsBackup
+# maven gitignore#
+*/target/**
+*/logs/**
+logs
+.DS_Store

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.loveapp.test</groupId>
+        <artifactId>test-services-group</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>test-service</artifactId>
+
+    <name>爱用-test-service</name>
+    <description>爱用-test web接口模块</description>
+    <version>1.0-SNAPSHOT</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>cn.loveapp.common</groupId>
+            <artifactId>common-spring-boot-web-starter</artifactId>
+            <exclusions>
+				<!-- 数据库相关依赖, 不需要操作数据库时去放开以下注释 -->
+				<exclusion>
+					<groupId>org.postgresql</groupId>
+					<artifactId>postgresql</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>io.shardingjdbc</groupId>
+					<artifactId>sharding-jdbc-core</artifactId>
+				</exclusion>
+				<!--
+				<exclusion>
+					<artifactId>mybatis-spring-boot-starter</artifactId>
+					<groupId>org.mybatis.spring.boot</groupId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.alibaba</groupId>
+					<artifactId>druid-spring-boot-starter</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.alibaba</groupId>
+					<artifactId>druid</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>mysql</groupId>
+					<artifactId>mysql-connector-java</artifactId>
+				</exclusion>
+				-->
+            </exclusions>
+        </dependency>
+		<!-- 用户session信息模块 -->
+		<dependency>
+			<groupId>cn.loveapp.common</groupId>
+			<artifactId>common-user-session-starter</artifactId>
+		</dependency>
+        <dependency>
+            <groupId>com.loveapp.test</groupId>
+            <artifactId>test-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.loveapp.test</groupId>
+            <artifactId>test-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <!-- 可选依赖 -->
+        <!-- taobao top sdk -->
+        <!--
+        <dependency>
+            <groupId>com.taobao</groupId>
+            <artifactId>topsdk</artifactId>
+        </dependency>
+        -->
+		<!-- pdd pop sdk -->
+		<!--
+		<dependency>
+			<groupId>com.pdd</groupId>
+			<artifactId>popsdk</artifactId>
+		</dependency>
+		-->
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
